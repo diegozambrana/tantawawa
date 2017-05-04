@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "8781d496-9dd1-4d48-a6fd-9ffe581ed9f0",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "m_tantawawa": {
+      "ver": "1.0.3",
+      "uuid": "a6acf5e8-3971-4231-9b5f-cfe93d0fa429",
+      "rawTextureUuid": "8781d496-9dd1-4d48-a6fd-9ffe581ed9f0",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 1.5,
+      "offsetY": -2,
+      "trimX": 5,
+      "trimY": 6,
+      "width": 203,
+      "height": 287,
+      "rawWidth": 210,
+      "rawHeight": 295,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
