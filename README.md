@@ -6,7 +6,11 @@ Juego desarrollado en cocos2d.
 
 Se debe descargar el motor de videojuegos CocosCreator para mac o windows desde la siguiente url [www.cocos2d-x.org/download](http://www.cocos2d-x.org/download) para proceder a instalarlo.
 
-Luego se procede a clonar el repositorio actual `git clone https://github.com/mrtrash/tantawawa.git`.
+Luego se procede a clonar el repositorio actual.
+
+```
+git clone https://github.com/mrtrash/tantawawa.git
+```
 
 Una vez terminado estos pasos abrimos CocosCreator, seleccionamos la opción "Open Other..." y buscamos la carpeta del repositorio la seleccionamos y le damos click en "Abrir".
 
