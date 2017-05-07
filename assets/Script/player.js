@@ -13,6 +13,27 @@ cc.Class({
         },
     },
     
+    moveTo: function(direction){
+        var self = this;
+        cc.log("moveTo: " + direction);
+        if(direction == "left"){
+            self.accLeft = true;
+            self.accRight = false;
+        }else{
+            self.accLeft = false;
+            self.accRight = true;
+        }
+    },
+    
+    stop: function(direction){
+        var self = this;
+        if(direction == "left"){
+            self.accLeft = false;
+        }else{
+            self.accRight = false;
+        }
+    },
+    
     setInputControl: function () {
         // configura las entradas
         var self = this;
@@ -22,24 +43,22 @@ cc.Class({
             // Al presionar la tecla se establece la direccion de la aceleracion
             onKeyPressed: function(keyCode, event) {
                 switch(keyCode) {
-                    case cc.KEY.a || cc.KEY.left:
-                        self.accLeft = true;
-                        self.accRight = false;
+                    case cc.KEY.a:
+                        self.moveTo("left");
                         break;
-                    case cc.KEY.d || cc.KEY.right:
-                        self.accLeft = false;
-                        self.accRight = true;
+                    case cc.KEY.d:
+                        self.moveTo("right");
                         break;
                 }
             },
             // al levantar la tecla se detiene la aceleracion
             onKeyReleased: function(keyCode, event) {
                 switch(keyCode) {
-                    case cc.KEY.a || cc.KEY.left:
-                        self.accLeft = false;
+                    case cc.KEY.a:
+                        self.stop("left");
                         break;
-                    case cc.KEY.d  || cc.KEY.right:
-                        self.accRight = false;
+                    case cc.KEY.d :
+                        self.stop("right");
                         break;
                 }
             }

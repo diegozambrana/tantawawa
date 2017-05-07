@@ -112,6 +112,9 @@
     "_components": [
       {
         "__id__": 17
+      },
+      {
+        "__id__": 18
       }
     ],
     "_prefab": null,
@@ -678,5 +681,23 @@
     },
     "_fitWidth": false,
     "_fitHeight": true
+  },
+  {
+    "__type__": "5485cyO7wZJQ4kYeN1J45K7",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "buttonPlay": {
+      "__id__": 11
+    },
+    "buttonHelp": {
+      "__id__": 15
+    },
+    "buttonExit": {
+      "__id__": 13
+    }
   }
 ]
