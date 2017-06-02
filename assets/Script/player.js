@@ -6,7 +6,9 @@ cc.Class({
         maxMoveSpeed: 0,
         // aceleracion
         accel: 0,
+        // velocidad
         speed: 0,
+        // instancia del nodo canvas
         canvas: {
             default: null,
             type: cc.Node
@@ -34,52 +36,13 @@ cc.Class({
         }
     },
     
-    setInputControl: function () {
-        // configura las entradas
-        var self = this;
-        // Agregamos un evento de teclado
-        cc.eventManager.addListener({
-            event: cc.EventListener.KEYBOARD,
-            // Al presionar la tecla se establece la direccion de la aceleracion
-            onKeyPressed: function(keyCode, event) {
-                switch(keyCode) {
-                    case cc.KEY.a:
-                        self.moveTo("left");
-                        break;
-                    case cc.KEY.d:
-                        self.moveTo("right");
-                        break;
-                }
-            },
-            // al levantar la tecla se detiene la aceleracion
-            onKeyReleased: function(keyCode, event) {
-                switch(keyCode) {
-                    case cc.KEY.a:
-                        self.stop("left");
-                        break;
-                    case cc.KEY.d :
-                        self.stop("right");
-                        break;
-                }
-            }
-        }, self.node);
-    },
-
-    // use this for initialization
     onLoad: function () {
         // variables de aceleracion
         this.accLeft = false;
         this.accRight = false;
         this.xSpeed = 0;
-        this.setInputControl();
-        cc.log("this.canvas.width(): " + this.canvas.width);
-        cc.log("this.node.x: " + this.node.x);
     },
     
-    move: function(){
-        
-    },
-
     update: function (dt) {
         // actualiza la velocidad del personaje
         if (this.accLeft) {

@@ -46,6 +46,43 @@ cc.Class({
         
     },
 
+    setInputControl: function () {
+        // configura las entradas
+        var self = this;
+        // obtenemos el componente player de nuestro personaje pricipal
+        var player = self.player.getComponent("player");
+        // Agregamos un evento de teclado
+        cc.eventManager.addListener({
+            event: cc.EventListener.KEYBOARD,
+            // Al presionar la tecla se establece la direccion de la aceleracion
+            onKeyPressed: function(keyCode, event) {
+                switch(keyCode) {
+                    case cc.KEY.a:
+                        if(!self.gamePaused)
+                            player.moveTo("left");
+                        break;
+                    case cc.KEY.d:
+                        if(!self.gamePaused)
+                            player.moveTo("right");
+                        break;
+                }
+            },
+            // al levantar la tecla se detiene la aceleracion
+            onKeyReleased: function(keyCode, event) {
+                switch(keyCode) {
+                    case cc.KEY.a:
+                        if(!self.gamePaused)
+                            player.stop("left");
+                        break;
+                    case cc.KEY.d :
+                        if(!self.gamePaused)
+                            player.stop("right");
+                        break;
+                }
+            }
+        }, self.node);
+    },
+
     setButtonControl: function(){
         var self = this;
         // obtenemos el componente player de nuestro personaje pricipal
@@ -81,7 +118,7 @@ cc.Class({
                 self.unschedule(self.callbackEngery);
             }
         };
-        self.schedule(self.callbackEngery, 1);
+        self.schedule(self.callbackEngery, 0.1);
     },
 
     setProgress: function(){
@@ -99,7 +136,7 @@ cc.Class({
                 self.unschedule(self.callbackEngery);
             }
         };
-        self.schedule(self.callbackProgress,1);
+        self.schedule(self.callbackProgress,0.1);
     },
 
     setPauseButton: function(){
@@ -109,7 +146,6 @@ cc.Class({
         self.buttonPause.on(cc.Node.EventType.TOUCH_START, function (event) {
             cc.log("PAUSE");
             self.gamePaused = true;
-            //if(self.gamePaused){
             self.unschedule(self.callbackProgress);
             self.unschedule(self.callbackEngery); 
             self.pauseModal.active = true;
@@ -118,8 +154,8 @@ cc.Class({
         self.buttonResume.on(cc.Node.EventType.TOUCH_START, function(event){
             cc.log("RESUME");
             self.gamePaused = false;
-            self.schedule(self.callbackProgress,1);
-            self.schedule(self.callbackEngery,1);
+            self.schedule(self.callbackProgress,0.1);
+            self.schedule(self.callbackEngery,0.1);
             self.pauseModal.active = false;
         }, self.node);
         cc.log(self.pauseModal);
@@ -132,6 +168,7 @@ cc.Class({
     onLoad: function () {
         var self = this;
         self.setButtonControl();
+        self.setInputControl();
         self.setEnergy();
         self.setProgress();
         self.setPauseButton();

@@ -1418,10 +1418,10 @@
       "__id__": 31
     },
     "energy": 100,
-    "energyDifference": 2,
+    "energyDifference": 0.3,
     "progressTotal": 100,
     "progressCurrent": 0,
-    "progressDifference": 5,
+    "progressDifference": 0.2,
     "gamePaused": false,
     "pauseModal": {
       "__id__": 24
