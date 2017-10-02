@@ -27,6 +27,9 @@ cc.Class({
         buttonPause: cc.Node,
         buttonResume: cc.Node,
         buttonExitGame: cc.Node,
+        buttonRestart: cc.Node,
+        buttonEndExitGame: cc.Node,
+        buttonWinExitGame: cc.Node,
         
         // controles para la barra de energia
         energy: 0,
@@ -43,7 +46,32 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+
+        // controla cuando el juego se pierde
+        gameLose: false,
+        endGameModal : {
+            default: null,
+            type: cc.Node
+        },
+
+        backgroundPrefab: {
+            default: null,
+            type: cc.Prefab
+        },
+
+        energyPrefab: {
+            default: null,
+            type: cc.Prefab
+        },
         
+        stair: {
+            default: null,
+            type: cc.Node
+        },
+        winGameModal :  {
+            default: null,
+            type: cc.Node
+        },
     },
 
     setInputControl: function () {
@@ -58,11 +86,11 @@ cc.Class({
             onKeyPressed: function(keyCode, event) {
                 switch(keyCode) {
                     case cc.KEY.a:
-                        if(!self.gamePaused)
+                        if(!self.gamePaused && !self.gameLose)
                             player.moveTo("left");
                         break;
                     case cc.KEY.d:
-                        if(!self.gamePaused)
+                        if(!self.gamePaused && !self.gameLose)
                             player.moveTo("right");
                         break;
                 }
@@ -71,11 +99,11 @@ cc.Class({
             onKeyReleased: function(keyCode, event) {
                 switch(keyCode) {
                     case cc.KEY.a:
-                        if(!self.gamePaused)
+                        if(!self.gamePaused && !self.gameLose)
                             player.stop("left");
                         break;
                     case cc.KEY.d :
-                        if(!self.gamePaused)
+                        if(!self.gamePaused && !self.gameLose)
                             player.stop("right");
                         break;
                 }
@@ -89,19 +117,19 @@ cc.Class({
         var player = self.player.getComponent("player");
         // agregamos la funcionalidad a los botones de derecha e izquierda.
         self.buttonLeft.on(cc.Node.EventType.TOUCH_START, function (event) {
-            if(!self.gamePaused)
+            if(!self.gamePaused && !self.gameLose)
                 player.moveTo("left");
         }, self.node);
         self.buttonLeft.on(cc.Node.EventType.TOUCH_END, function (event) {
-            if(!self.gamePaused)
+            if(!self.gamePaused && !self.gameLose)
                 player.stop("left");
         }, self.node);
         self.buttonRight.on(cc.Node.EventType.TOUCH_START, function (event) {
-            if(!self.gamePaused)
+            if(!self.gamePaused && !self.gameLose)
                 player.moveTo("right");
         }, self.node);
         self.buttonRight.on(cc.Node.EventType.TOUCH_END, function (event) {
-            if(!self.gamePaused)
+            if(!self.gamePaused && !self.gameLose)
                 player.stop("right");
         }, self.node);
     },
@@ -114,8 +142,9 @@ cc.Class({
             self.energyBar.width = 188*self.energy/100;
             if(self.energy < 1){
                 // si la energia llega a cero se detiene
-                cc.log("END GAME");
-                self.unschedule(self.callbackEngery);
+                cc.log("END GAME ENERGY 0");
+                //self.unschedule(self.callbackEngery);
+                self.endGame();
             }
         };
         self.schedule(self.callbackEngery, 0.1);
@@ -125,15 +154,14 @@ cc.Class({
         var self = this;
         // avanzamos el indicador de progreso
         var startProgress = self.progressIndicator.x;
-        cc.log(startProgress);
         self.callbackProgress = function(){
             self.progressCurrent += self.progressDifference;
-            cc.log(self.progressCurrent);
             self.progressIndicator.x = startProgress + (170*self.progressCurrent/100);
             if(self.progressCurrent >= self.progressTotal){
                 cc.log("FINISH GAME");
                 self.unschedule(self.callbackProgress);
                 self.unschedule(self.callbackEngery);
+                self.winGame();
             }
         };
         self.schedule(self.callbackProgress,0.1);
@@ -146,14 +174,21 @@ cc.Class({
         self.buttonPause.on(cc.Node.EventType.TOUCH_START, function (event) {
             cc.log("PAUSE");
             self.gamePaused = true;
+            self.unschedule(self.callbackCreateEnergy);
+            self.energyList.forEach(function(e){
+               e.getComponent("energy").stop(); 
+            });
             self.unschedule(self.callbackProgress);
-            self.unschedule(self.callbackEngery); 
+            self.unschedule(self.callbackEngery);
             self.pauseModal.active = true;
-
         }, self.node);
         self.buttonResume.on(cc.Node.EventType.TOUCH_START, function(event){
             cc.log("RESUME");
             self.gamePaused = false;
+            self.energyList.forEach(function(e){
+               e.getComponent("energy").restart(); 
+            });
+            self.schedule(self.callbackCreateEnergy, self.delay);
             self.schedule(self.callbackProgress,0.1);
             self.schedule(self.callbackEngery,0.1);
             self.pauseModal.active = false;
@@ -165,15 +200,124 @@ cc.Class({
         }, self.node);
     },
 
+    setEndGameButton: function(){
+        var self = this;
+        self.endGameModal.active = false;
+        self.buttonRestart.on(cc.Node.EventType.TOUCH_START, function (event) {
+            cc.log("RESTART");
+            self.gameLose = false;
+            self.progressCurrent = 0;
+            self.energy = self.totalEnergy;
+            self.schedule(self.callbackProgress,0.1);
+            self.schedule(self.callbackEngery,0.1);
+            self.endGameModal.active = false;
+        }, self.node);
+        self.buttonEndExitGame.on(cc.Node.EventType.TOUCH_START, function (event) {
+            cc.log("EXIT");
+            cc.director.loadScene("Scene/Menu");
+        }, self.node);
+    },
+    setWin: function(){
+        var self = this;
+        self.winGameModal.active = false;
+        self.buttonWinExitGame.on(cc.Node.EventType.TOUCH_START, function (event) {
+            cc.log("EXIT");
+            cc.director.loadScene("Scene/Menu");
+        }, self.node);
+    },
+
+    endGame: function(){
+        var self = this;
+        var player = self.player.getComponent("player");
+        self.gameLose = true;
+        player.stop("left");
+        player.stop("right");
+        self.endGameModal.active = true;
+        self.unschedule(self.callbackProgress);
+        self.unschedule(self.callbackEngery); 
+        self.unschedule(self.callbackCreateEnergy);
+    },
+
+    winGame: function(){
+        var self = this;
+        var player = self.player.getComponent("player");
+        player.stop("left");
+        player.stop("right");
+
+        
+        self.unschedule(self.callbackProgress);
+        self.unschedule(self.callbackEngery); 
+        self.unschedule(self.callbackCreateEnergy);
+
+        // agrega la escalera
+        var anim = self.stair.getComponent(cc.Animation);
+        anim.play("AnimationStair");
+        var animPlayer = player.getComponent(cc.Animation);
+        animPlayer.play("AnimationTantawawaFinal");
+
+        //muestra el modal de felicitaciones
+        self.scheduleOnce(function(){self.winGameModal.active = true;}, 2);
+    },
+
+    createEnergy: function(){
+        var self = this;
+        var newEnergy = cc.instantiate(this.energyPrefab);
+        this.node.addChild(newEnergy, -1);
+        newEnergy.setPosition(this.getNewEnergyPosition());
+        newEnergy.getComponent('energy').game = this;
+        self.energyList.push(newEnergy);
+    },
+
+    getNewEnergyPosition: function(){
+        var maxX = (this.node.width/2) - 60;
+        var randX = cc.randomMinus1To1() * maxX;
+        var randY = this.node.height/2 + 60;
+        return cc.p(randX, randY);
+    },
+
+    removeEnergyFromList: function(){
+        var self = this;
+        self.energyList.shift();
+    },
+
+
+    setBackground: function(){
+        var self = this;
+        self.background = cc.instantiate(self.backgroundPrefab);
+        self.node.addChild(self.background, -2);
+        self.background.setPosition(cc.p(0,0));
+    },
+
+    setCreateEnergy: function(){
+        var self = this;
+        self.delay = 2;
+        self.callbackCreateEnergy = function(){
+            self.createEnergy();
+        };
+        self.schedule(self.callbackCreateEnergy, self.delay);
+    },
+
+    addEnergy: function(value){
+        var self = this;
+        self.energy = self.energy + value;
+    },
+
     onLoad: function () {
         var self = this;
+        self.energyList = [];
+        self.totalEnergy = self.energy;
         self.setButtonControl();
         self.setInputControl();
         self.setEnergy();
         self.setProgress();
         self.setPauseButton();
+        self.setEndGameButton();
+        self.setBackground();
+        self.setCreateEnergy();
+        self.setWin();
     },
 
+    
     update: function (dt) {
 
     },

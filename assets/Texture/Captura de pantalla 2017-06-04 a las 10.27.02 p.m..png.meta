@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "7298882b-aeab-4e3e-a1fa-676ca0166c89",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Captura de pantalla 2017-06-04 a las 10.27.02 p.m.": {
+      "ver": "1.0.3",
+      "uuid": "644a3bd8-863e-4d60-b921-7224ed7196fb",
+      "rawTextureUuid": "7298882b-aeab-4e3e-a1fa-676ca0166c89",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 598,
+      "height": 526,
+      "rawWidth": 598,
+      "rawHeight": 526,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
