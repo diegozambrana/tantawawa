@@ -63,6 +63,11 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+
+        demonPrefab: {
+            default: null,
+            type: cc.Prefab
+        },
         
         stair: {
             default: null,
@@ -178,6 +183,10 @@ cc.Class({
             self.energyList.forEach(function(e){
                e.getComponent("energy").stop(); 
             });
+            self.unschedule(self.callbackCreateSmallDemon);
+            self.demonSmallList.forEach(function(sd){
+               sd.getComponent("demon_small").stop(); 
+            });
             self.unschedule(self.callbackProgress);
             self.unschedule(self.callbackEngery);
             self.pauseModal.active = true;
@@ -188,7 +197,13 @@ cc.Class({
             self.energyList.forEach(function(e){
                e.getComponent("energy").restart(); 
             });
-            self.schedule(self.callbackCreateEnergy, self.delay);
+            self.demonSmallList.forEach(function(sd){
+               cc.log("demonSmallList ELEMENT sd")
+               cc.log(sd)
+               sd.getComponent("demon_small").restart(); 
+            });
+            self.schedule(self.callbackCreateEnergy, self.delay_energy);
+            self.schedule(self.callbackCreateSmallDemon, self.delay_energy);
             self.schedule(self.callbackProgress,0.1);
             self.schedule(self.callbackEngery,0.1);
             self.pauseModal.active = false;
@@ -236,6 +251,7 @@ cc.Class({
         self.unschedule(self.callbackProgress);
         self.unschedule(self.callbackEngery); 
         self.unschedule(self.callbackCreateEnergy);
+        self.unschedule(self.callbackCreateSmallDemon);
     },
 
     winGame: function(){
@@ -248,6 +264,7 @@ cc.Class({
         self.unschedule(self.callbackProgress);
         self.unschedule(self.callbackEngery); 
         self.unschedule(self.callbackCreateEnergy);
+        self.unschedule(self.callbackCreateSmallDemon);
 
         // agrega la escalera
         var anim = self.stair.getComponent(cc.Animation);
@@ -268,6 +285,15 @@ cc.Class({
         self.energyList.push(newEnergy);
     },
 
+    createSmallDemon: function(){
+        var self = this;
+        var newDemon = cc.instantiate(this.demonPrefab);
+        this.node.addChild(newDemon, -1);
+        newDemon.setPosition(this.getNewEnergyPosition());
+        newDemon.getComponent('demon_small').game = this;
+        self.demonSmallList.push(newDemon);
+    },
+
     getNewEnergyPosition: function(){
         var maxX = (this.node.width/2) - 60;
         var randX = cc.randomMinus1To1() * maxX;
@@ -280,6 +306,10 @@ cc.Class({
         self.energyList.shift();
     },
 
+    removeSmallDemonFromList: function(){
+        var self = this;
+        self.demonSmallList.shift();
+    },
 
     setBackground: function(){
         var self = this;
@@ -290,11 +320,29 @@ cc.Class({
 
     setCreateEnergy: function(){
         var self = this;
-        self.delay = 2;
+        self.delay_energy = 2.7;
         self.callbackCreateEnergy = function(){
             self.createEnergy();
         };
-        self.schedule(self.callbackCreateEnergy, self.delay);
+        self.schedule(self.callbackCreateEnergy, self.delay_energy);
+    },
+
+    setCreateDemons: function(){
+        var self = this;
+        self.delay_demon_small = 1;
+        self.callbackCreateSmallDemon = function(){
+            self.createSmallDemon();
+        };
+        self.schedule(self.callbackCreateSmallDemon, self.delay_demon_small);
+    },
+
+    subtractEnergy: function(value){
+        var self = this;
+        if(value < self.energy){
+            self.energy = self.energy - value;
+        }else{
+            self.energy = 0;
+        }
     },
 
     addEnergy: function(value){
@@ -305,6 +353,7 @@ cc.Class({
     onLoad: function () {
         var self = this;
         self.energyList = [];
+        self.demonSmallList = [];
         self.totalEnergy = self.energy;
         self.setButtonControl();
         self.setInputControl();
@@ -314,6 +363,7 @@ cc.Class({
         self.setEndGameButton();
         self.setBackground();
         self.setCreateEnergy();
+        self.setCreateDemons();
         self.setWin();
     },
 
