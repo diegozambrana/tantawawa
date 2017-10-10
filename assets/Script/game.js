@@ -68,6 +68,11 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+
+        demonBigPrefab: {
+            default: null,
+            type: cc.Prefab
+        },
         
         stair: {
             default: null,
@@ -184,8 +189,12 @@ cc.Class({
                e.getComponent("energy").stop(); 
             });
             self.unschedule(self.callbackCreateSmallDemon);
+            self.unschedule(self.callbackCreateBigDemon);
             self.demonSmallList.forEach(function(sd){
                sd.getComponent("demon_small").stop(); 
+            });
+            self.demonBigList.forEach(function(bd){
+               bd.getComponent("demon_big").stop(); 
             });
             self.unschedule(self.callbackProgress);
             self.unschedule(self.callbackEngery);
@@ -198,12 +207,16 @@ cc.Class({
                e.getComponent("energy").restart(); 
             });
             self.demonSmallList.forEach(function(sd){
-               cc.log("demonSmallList ELEMENT sd")
-               cc.log(sd)
                sd.getComponent("demon_small").restart(); 
+            });
+            self.demonBigList.forEach(function(bd){
+               cc.log("demonBIGList ELEMENT sd");
+               cc.log(bd);
+               bd.getComponent("demon_big").restart(); 
             });
             self.schedule(self.callbackCreateEnergy, self.delay_energy);
             self.schedule(self.callbackCreateSmallDemon, self.delay_energy);
+            self.schedule(self.callbackCreateBigDemon, self.delay_big_demon);
             self.schedule(self.callbackProgress,0.1);
             self.schedule(self.callbackEngery,0.1);
             self.pauseModal.active = false;
@@ -252,6 +265,7 @@ cc.Class({
         self.unschedule(self.callbackEngery); 
         self.unschedule(self.callbackCreateEnergy);
         self.unschedule(self.callbackCreateSmallDemon);
+        self.unschedule(self.callbackCreateBigDemon);
     },
 
     winGame: function(){
@@ -265,6 +279,7 @@ cc.Class({
         self.unschedule(self.callbackEngery); 
         self.unschedule(self.callbackCreateEnergy);
         self.unschedule(self.callbackCreateSmallDemon);
+        self.unschedule(self.callbackCreateBigDemon);
 
         // agrega la escalera
         var anim = self.stair.getComponent(cc.Animation);
@@ -292,6 +307,16 @@ cc.Class({
         newDemon.setPosition(this.getNewEnergyPosition());
         newDemon.getComponent('demon_small').game = this;
         self.demonSmallList.push(newDemon);
+    },
+
+    createBigDemon: function(){
+        var self = this;
+        var newDemon = cc.instantiate(this.demonBigPrefab);
+        this.node.addChild(newDemon, -1);
+        newDemon.setPosition(this.getNewEnergyPosition());
+        newDemon.getComponent('demon_big').game = this;
+        newDemon.getComponent('demon_big').setPosition(this.getNewEnergyPosition());
+        self.demonBigList.push(newDemon);
     },
 
     getNewEnergyPosition: function(){
@@ -329,11 +354,16 @@ cc.Class({
 
     setCreateDemons: function(){
         var self = this;
-        self.delay_demon_small = 1;
+        self.delay_demon_small = 1.5;
+        self.delay_big_demon = 2.5;
         self.callbackCreateSmallDemon = function(){
             self.createSmallDemon();
         };
+        self.callbackCreateBigDemon = function(){
+            self.createBigDemon();
+        };
         self.schedule(self.callbackCreateSmallDemon, self.delay_demon_small);
+        self.schedule(self.callbackCreateBigDemon, self.delay_big_demon);
     },
 
     subtractEnergy: function(value){
@@ -354,6 +384,7 @@ cc.Class({
         var self = this;
         self.energyList = [];
         self.demonSmallList = [];
+        self.demonBigList = [];
         self.totalEnergy = self.energy;
         self.setButtonControl();
         self.setInputControl();

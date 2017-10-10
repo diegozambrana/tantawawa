@@ -2416,6 +2416,9 @@
     "demonPrefab": {
       "__uuid__": "c71e4134-b890-483a-99a5-580a4bd5d579"
     },
+    "demonBigPrefab": {
+      "__uuid__": "4133f26b-4f45-4d5a-91dd-27b75fcd15f3"
+    },
     "stair": {
       "__id__": 3
     },
