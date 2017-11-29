@@ -7,7 +7,7 @@
     "anysdk"
   ],
   "inlineSpriteFrames": true,
-  "mergeStartScene": false,
+  "mergeStartScene": true,
   "oauthLoginServer": "",
   "orientation": {
     "landscapeLeft": false,
@@ -17,7 +17,7 @@
   },
   "packageName": "org.cocos2d.tantawawa",
   "privateKey": "",
-  "renderMode": "0",
+  "renderMode": "1",
   "startScene": "50ae46f2-92d7-4536-88a5-07a5ddaa1d18",
   "title": "tantawawa",
   "webOrientation": "auto"

@@ -182,7 +182,6 @@ cc.Class({
         // agregamos funcionalidad al boton pause
         self.pauseModal.active = false;
         self.buttonPause.on(cc.Node.EventType.TOUCH_START, function (event) {
-            cc.log("PAUSE");
             self.gamePaused = true;
             self.unschedule(self.callbackCreateEnergy);
             self.energyList.forEach(function(e){
@@ -194,25 +193,30 @@ cc.Class({
                sd.getComponent("demon_small").stop(); 
             });
             self.demonBigList.forEach(function(bd){
-               bd.getComponent("demon_big").stop(); 
+               try{
+                 bd.getComponent("demon_big").stop();
+               }catch(e){}
             });
             self.unschedule(self.callbackProgress);
             self.unschedule(self.callbackEngery);
             self.pauseModal.active = true;
         }, self.node);
         self.buttonResume.on(cc.Node.EventType.TOUCH_START, function(event){
-            cc.log("RESUME");
             self.gamePaused = false;
             self.energyList.forEach(function(e){
-               e.getComponent("energy").restart(); 
+              try{
+                e.getComponent("energy").restart();
+              }catch(e){}
             });
             self.demonSmallList.forEach(function(sd){
-               sd.getComponent("demon_small").restart(); 
+              try{
+               sd.getComponent("demon_small").restart();
+              }catch(e){}
             });
             self.demonBigList.forEach(function(bd){
-               cc.log("demonBIGList ELEMENT sd");
-               cc.log(bd);
-               bd.getComponent("demon_big").restart(); 
+              try{
+                bd.getComponent("demon_big").restart(); 
+              }catch(e){}
             });
             self.schedule(self.callbackCreateEnergy, self.delay_energy);
             self.schedule(self.callbackCreateSmallDemon, self.delay_energy);
@@ -221,27 +225,42 @@ cc.Class({
             self.schedule(self.callbackEngery,0.1);
             self.pauseModal.active = false;
         }, self.node);
-        cc.log(self.pauseModal);
         self.buttonExitGame.on(cc.Node.EventType.TOUCH_START, function (event) {
             cc.log("EXIT");
             cc.director.loadScene("Scene/Menu");
         }, self.node);
     },
 
+    removeAll: function(){
+        var self = this;
+        self.energyList.forEach(function(e){
+            try{e.getComponent("energy").destroy();}catch(e){}
+        });
+        self.demonSmallList.forEach(function(sd){
+            try{sd.getComponent("demon_small").destroy();}catch(e){}
+        });
+        self.demonBigList.forEach(function(bd){
+            try{bd.getComponent("demon_big").destroy();}catch(e){}
+        });
+    },
+
     setEndGameButton: function(){
         var self = this;
         self.endGameModal.active = false;
         self.buttonRestart.on(cc.Node.EventType.TOUCH_START, function (event) {
-            cc.log("RESTART");
             self.gameLose = false;
             self.progressCurrent = 0;
             self.energy = self.totalEnergy;
             self.schedule(self.callbackProgress,0.1);
             self.schedule(self.callbackEngery,0.1);
+            self.schedule(self.callbackCreateEnergy, self.delay_energy);
+            self.schedule(self.callbackCreateSmallDemon, self.delay_energy);
+            self.schedule(self.callbackCreateBigDemon, self.delay_big_demon);
+            self.removeAll();
             self.endGameModal.active = false;
+
         }, self.node);
         self.buttonEndExitGame.on(cc.Node.EventType.TOUCH_START, function (event) {
-            cc.log("EXIT");
             cc.director.loadScene("Scene/Menu");
         }, self.node);
     },
@@ -249,7 +268,6 @@ cc.Class({
         var self = this;
         self.winGameModal.active = false;
         self.buttonWinExitGame.on(cc.Node.EventType.TOUCH_START, function (event) {
-            cc.log("EXIT");
             cc.director.loadScene("Scene/Menu");
         }, self.node);
     },
