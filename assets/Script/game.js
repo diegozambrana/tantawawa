@@ -82,6 +82,24 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        
+        musicAudio: {
+            default: null,
+            url: cc.AudioClip
+        },
+        energyAudio1: {
+            default: null,
+            url: cc.AudioClip
+        },
+        energyAudio2: {
+            default: null,
+            url: cc.AudioClip
+        },
+        eatAudio: {
+            default: null,
+            url: cc.AudioClip
+        },
+
     },
 
     setInputControl: function () {
@@ -391,15 +409,35 @@ cc.Class({
         }else{
             self.energy = 0;
         }
+        if(!self.is_eating){
+            cc.audioEngine.playEffect(self.eatAudio);
+            self.is_eating = true;
+            self.schedule(function(){self.is_eating = false;}, 0.8);
+        }
     },
 
     addEnergy: function(value){
         var self = this;
         self.energy = self.energy + value;
+        if(self.rezo_type){
+            cc.audioEngine.playEffect(self.energyAudio1);
+        }else{
+            cc.audioEngine.playEffect(self.energyAudio2);
+        }
+        self.rezo_type = !self.rezo_type;
+    },
+    
+    startMusic: function(){
+        var self = this;
+        // true para que se reprodusca dentor un loop
+        // false para que se reprodusca solo una vez
+        cc.audioEngine.playMusic(self.musicAudio, true);
     },
 
     onLoad: function () {
         var self = this;
+        self.rezo_type = false;
+        self.is_eating = false;
         self.energyList = [];
         self.demonSmallList = [];
         self.demonBigList = [];
@@ -414,6 +452,7 @@ cc.Class({
         self.setCreateEnergy();
         self.setCreateDemons();
         self.setWin();
+        self.startMusic();
     },
 
     
