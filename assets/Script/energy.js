@@ -23,7 +23,8 @@ cc.Class({
         // judge the distance according to the position of the player node
         var playerPos = this.game.player.getPosition();
         // calculate the distance between two nodes according to their positions
-        var dist = cc.pDistance(this.node.position, playerPos);
+        // var dist = cc.pDistance(this.node.position, playerPos);
+        var dist = this.node.position.sub(playerPos).mag()
         return dist;
     },
 

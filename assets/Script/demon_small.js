@@ -10,7 +10,13 @@ cc.Class({
     onLoad: function () {
         this.vel = 6;
         this.xMove = cc.random0To1() * 4 + 0.5;
-        this.direction = cc.randomMinus1To1() < 0 ? -1 : 1;
+        cc.log("------------- aqui ")
+        cc.log("this.node");
+        cc.log(this.node);
+        cc.log("(Math.random() - 0.5) * 2: ")
+        cc.log((Math.random() - 0.5) * 2)
+        // this.direction = cc.randomMinus1To1() < 0 ? -1 : 1;
+        this.direction = ((Math.random() * 0.5) * 2) ? -1 : 1;
         this.node.scaleX = -1 * this.direction;
         cc.log("this.node");
         cc.log(this.node);
@@ -30,7 +36,8 @@ cc.Class({
         // judge the distance according to the position of the player node
         var playerPos = this.game.player.getPosition();
         // calculate the distance between two nodes according to their positions
-        var dist = cc.pDistance(this.node.position, playerPos);
+        // var dist = cc.pDistance(this.node.position, playerPos);
+        var dist = this.node.position.sub(playerPos).mag()
         return dist;
     },
 

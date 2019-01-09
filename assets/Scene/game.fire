@@ -2424,6 +2424,18 @@
     },
     "winGameModal": {
       "__id__": 51
+    },
+    "musicAudio": {
+      "__uuid__": "24f31124-3193-4e2d-ae0d-da1e7fc82d59"
+    },
+    "energyAudio1": {
+      "__uuid__": "c4bac654-16c7-436e-b5b0-16389ddec63e"
+    },
+    "energyAudio2": {
+      "__uuid__": "e7577a68-3f19-4322-be64-baf40aad170c"
+    },
+    "eatAudio": {
+      "__uuid__": "d33068c3-81fa-4fa4-9ae0-d83b845e697e"
     }
   }
 ]
